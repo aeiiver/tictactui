@@ -35,6 +35,14 @@ const char *o_square = "┌─────────────┐\n"
                        "│     @@@     │\n"
                        "└─────────────┘\n";
 
+const char *null_square = "┌─────────────┐\n"
+                          "│             │\n"
+                          "│             │\n"
+                          "│             │\n"
+                          "│             │\n"
+                          "│             │\n"
+                          "└─────────────┘\n";
+
 void draw_rectangle(size_t y, size_t x, size_t dy, size_t dx)
 {
     dy -= 1;
@@ -50,13 +58,11 @@ void draw_rectangle(size_t y, size_t x, size_t dy, size_t dx)
 }
 
 void draw_board_square(Game *g, size_t row, size_t col) {
-    draw_rectangle(row * SQ_VSTRIDE, col * SQ_HSTRIDE, SQ_HEIGHT, SQ_WIDTH);
-
     const char *sq;
     switch (g->board[row][col]) {
-      case Player_X:    sq = x_square; break;
-      case Player_O:    sq = o_square; break;
-      case Player_NULL:                return;
+      case Player_X:    { sq = x_square;    } break;
+      case Player_O:    { sq = o_square;    } break;
+      case Player_NULL: { sq = null_square; } break;
       default: unreachable();
     }
 
@@ -69,7 +75,9 @@ void draw_board_square(Game *g, size_t row, size_t col) {
         char *line = strtok_r(p, "\n", &save_ptr);
         assert(line && "Somehow my handmade square string null-terminated early");
 
-        move(row * SQ_VSTRIDE + r, col * SQ_HSTRIDE);
+        // TODO: figure out why this     vvv     gets inverted when removed
+        move((LINES + SQ_VSTRIDE) / 2 - (2 - row) * SQ_VSTRIDE + r,
+             (COLS + SQ_HSTRIDE) / 2 - (2 - col) * SQ_HSTRIDE);
         printw("%s", line);
     }
 }
