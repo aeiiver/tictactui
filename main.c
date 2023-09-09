@@ -166,7 +166,14 @@ int main(void)
           case 'l': { if (sel_c < 2) sel_c += 1; } continue;
 
           case KEY_ENTER: // FALLTHROUGH
-          case ' ': { Game_play(&g, sel_r, sel_c); } break;
+          case ' ': {
+            switch (Game_play(&g, sel_r, sel_c)) {
+              case PlayResult_Ok:                      break;
+              case PlayResult_Err_SquareAlreadyFilled: break; // Ignore error
+              case PlayResult_Err_GameIsOver:          assert(0 && "User should be prevent from playing");
+              default: unreachable();
+            }
+          } break;
 
           case 'q': // FALLTHROUGH
           case 'Q': {

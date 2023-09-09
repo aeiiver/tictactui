@@ -33,8 +33,14 @@ typedef struct {
     State state;
 } Game;
 
+typedef enum {
+    PlayResult_Ok,
+    PlayResult_Err_SquareAlreadyFilled,
+    PlayResult_Err_GameIsOver,
+} PlayResult;
+
 void   Game_init        (Game* g                        );
-void   Game_play        (Game* g, size_t row, size_t col);
+PlayResult   Game_play        (Game* g, size_t row, size_t col);
 Player Game_check_winner(Game* g                        );
 void   Game_print       (Game* g                        );
 
@@ -52,13 +58,13 @@ void Game_init(Game* g)
     g->state = State_PlayerTurn_X;
 }
 
-void Game_play(Game* g, size_t row, size_t col)
+PlayResult Game_play(Game* g, size_t row, size_t col)
 {
     assert(g);
     assert(row <= 3 && col <= 3);
 
     if (g->board[row][col] != Player_NULL) {
-        assert(0 && "TODO: return error: square already filled");
+        return PlayResult_Err_SquareAlreadyFilled;
     }
 
     switch (g->state) {
@@ -74,7 +80,7 @@ void Game_play(Game* g, size_t row, size_t col)
 
     case State_GameOver_X_won: // FALLTHROUGH
     case State_GameOver_O_won: // FALLTHROUGH
-    case State_GameOver_Tie:   assert(0 && "TODO: return error: game is over");
+    case State_GameOver_Tie:   return PlayResult_Err_GameIsOver;
 
     default: unreachable();
     }
@@ -85,6 +91,8 @@ void Game_play(Game* g, size_t row, size_t col)
     case Player_O:    g->state = State_GameOver_O_won; break;
     default: unreachable();
     }
+
+    return PlayResult_Ok;
 }
 
 Player Game_check_winner(Game* g)
