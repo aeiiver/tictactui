@@ -1,3 +1,6 @@
+#ifndef TICTACTOE_H
+#define TICTACTOE_H
+
 #include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -34,6 +37,8 @@ void   Game_init        (Game* g                        );
 void   Game_play        (Game* g, size_t row, size_t col);
 Player Game_check_winner(Game* g                        );
 void   Game_print       (Game* g                        );
+
+#ifdef TICTACTOE_IMPLEMENTATION
 
 void Game_init(Game* g)
 {
@@ -134,15 +139,6 @@ void Game_print(Game* g)
     }
 }
 
-int main(void)
-{
-    Game g;
-    Game* gp = &g;
+#endif // TICTACTOE_IMPLEMENTATION
 
-    Game_init(gp);
-    Game_print(gp);
-    Game_play(gp, 1, 1);
-    Game_print(gp);
-
-    return 0;
-}
+#endif // TICTACTOE_H
