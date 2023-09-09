@@ -93,6 +93,8 @@ bool dialog_yesno(const char *msg)
           case 'y': // FALLTHROUGH
           case 'Y': { delwin(diag); erase(); return true;  } break;
 
+          case 'q': // FALLTHROUGH
+          case 'Q': // FALLTHROUGH
           case 'n': // FALLTHROUGH
           case 'N': { delwin(diag); erase(); return false; } break;
         }
