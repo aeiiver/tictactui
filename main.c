@@ -9,8 +9,13 @@
 
 #define SQ_HEIGHT   7
 #define SQ_WIDTH    15
-#define SQ_VSTRIDE  (SQ_HEIGHT + 0)
-#define SQ_HSTRIDE  (SQ_WIDTH  + 1)
+#define SQ_ROWGAP   0
+#define SQ_COLGAP   1
+#define SQ_VSTRIDE  (SQ_HEIGHT + SQ_ROWGAP)
+#define SQ_HSTRIDE  (SQ_WIDTH  + SQ_COLGAP)
+
+#define LINE_CENTERED(x)    (LINES / 2 - (x) / 2)
+#define COL_CENTERED(x)     (COLS / 2 - (x) / 2)
 
 #define LOOP for (;;)
 
@@ -81,7 +86,7 @@ bool dialog_yesno(const char *msg)
 {
     int height = 2 * SQ_HEIGHT;
     int width = 2 * SQ_WIDTH;
-    WINDOW *diag = newwin(height, width, LINES / 2 - height / 2, COLS / 2 - width / 2);
+    WINDOW *diag = newwin(height, width, LINE_CENTERED(height), COL_CENTERED(width));
     box(diag, 0, 0);
     wprintw(diag, "%s\n", msg);
     wprintw(diag, "[Y]es    ");
