@@ -135,6 +135,9 @@ int main(void)
     init_pair(ColorPair_Selected, COLOR_RED, COLOR_BLACK);
     int old_curs = curs_set(0);
 
+    mmask_t old_mmask;
+    mousemask(BUTTON1_RELEASED | REPORT_MOUSE_POSITION, &old_mmask);
+
     Game_init(&g);
     draw_board(&g);
 
@@ -165,6 +168,27 @@ int main(void)
           case KEY_RIGHT: // FALLTHROUGH
           case 'l': { if (sel_c < 2) sel_c += 1; } continue;
 
+          // TODO: improve this mess. Reading it is painful
+          case KEY_MOUSE: {
+            MEVENT e;
+            switch (getmouse(&e)) {
+              case OK: {
+                fprintf(stderr, "read mouse event: (%d, %d, %d)\n", e.x, e.y, e.z);
+                switch (e.bstate) {
+                  case BUTTON1_RELEASED: {
+                  } break;
+                  case REPORT_MOUSE_POSITION: {
+                  } continue;
+                  default: unreachable();
+                }
+              } break;
+              case ERR: {
+                fprintf(stderr, "error: couln't read mouse event\n");
+              } continue;
+              default: unreachable();
+            }
+          } // FALLTHROUGH
+
           case KEY_ENTER: // FALLTHROUGH
           case ' ': {
             switch (Game_play(&g, sel_r, sel_c)) {
@@ -186,6 +210,7 @@ int main(void)
 
 clean_exit:
     curs_set(old_curs);
+    mousemask(old_mmask, NULL);
     endwin();
 
     return 0;
