@@ -1,5 +1,5 @@
-CFLAGS := -Wall -Wextra -Wpedantic -ggdb
-LIBS   := -lncurses
+CFLAGS := -Wall -Wextra -Wpedantic -ggdb `pkg-config ncursesw --cflags`
+LIBS   := `pkg-config ncursesw --libs`
 
 all: main
 
